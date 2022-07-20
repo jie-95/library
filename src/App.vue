@@ -1,28 +1,57 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app">
+    <MyHeader />
+    <MyMain 
+    
+    :list="list"
+    />
+    <MyFooter />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MyHeader from "./components/MyHeader.vue";
+import MyMain from "./components/MyMain.vue";
+import MyFooter from "./components/MyFooter.vue";
 
 export default {
-  name: 'App',
+  data(){
+    return {
+      list:[]
+    }
+  },
   components: {
-    HelloWorld
+    MyHeader,
+    MyMain,
+    MyFooter,
+  },
+  mounted(){
+    this.$bus.$on('getBname',(Bnane) => {
+      // console.log(Bnane);
+      // console.log(this.list.filter((ele) => ele.bookname == Bnane));
+      this.list = this.list.filter((ele) => ele.bookname == Bnane)
+    })
+  },
+  beforeDestroy(){
+    this.$bus.$off('getBname')
+  
+  },
+  created(){
+    this.$axios({
+      url:"/api/getbooks"
+    }).then((res) => {
+      // console.log(res.data.data);
+      this.list = res.data.data
+      
+    })
   }
-}
+
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.app {
+  margin: 0 30px 0 30px;
+  background-color: rgb(247, 243, 243);
 }
 </style>
